@@ -122,6 +122,30 @@ button:hover {
     background-color: #333333;
 }
 
+/* ADMIN */
+.admin-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.admin-buttons button {
+    padding: 15px;
+    background-color: #000000;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.admin-buttons button:hover {
+    background-color: #333333;
+}
+
 /* CUENTAS */
 .accounts-container {
     width: 700px; /* Tamaño aumentado */

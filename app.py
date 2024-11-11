@@ -11,7 +11,7 @@ def get_db_connection():
     conn = pyodbc.connect(
         'DRIVER={ODBC Driver 18 for SQL Server};'
         'SERVER=mssql-180519-0.cloudclusters.net,10034;'
-        'DATABASE=Base_de_datos;'
+        'DATABASE=Tarea3;'
         'UID=Admin;'
         'PWD=Db12345678;'
         'Encrypt=no;'  # Disable SSL only for testing
@@ -23,13 +23,56 @@ def get_db_connection():
 def form():
     return render_template('Login.html')
 
-@app.route('/login')
+
+@app.route('/login', methods=['GET', 'POST'])
 def login():
+
+    if request.method == 'POST':
+
+        username = request.form['username']
+        password = request.form['password']
+
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        try:
+            cursor.execute("""
+                DECLARE @OutResult INT;
+                EXEC dbo.ValidarUsuario @Username=?, @Password=?, @OutResult=@OutResult OUTPUT;
+                SELECT @OutResult AS OutResult;
+            """, (username, password))
+
+            row = cursor.fetchone()
+            out_result = row.OutResult
+
+            if out_result == 0:
+
+                session['username'] = username
+                print("se ha iniciado sesión: ", username, password)
+
+                return redirect(url_for('inicio'))
+
+            else:
+                print("Error, inténtelo de nuevo")
+
+        except Exception as e:
+            print("Error en la base de datos:", {str(e)})
+
+        finally:
+            cursor.close()
+            conn.close()
+
     return render_template('Login.html')
 
-@app.route('/principal')
-def principal():
-    return render_template('Principal.html')
+
+@app.route('/inicio')
+def inicio():
+
+    if 'username' not in session:
+        flash("Por favor, inicia sesión primero.", "error")
+        return redirect(url_for('login'))
+
+    return render_template('Inicio.html')
 
 @app.route('/cuentas')
 def cuentas():
@@ -42,6 +85,12 @@ def movimientos():
 @app.route('/estados_cuenta')
 def estados_cuenta():
     return render_template('EstadosCuenta.html')
+
+#*****************************ADMINISTRADOR*************************************
+
+@app.route('/admin')
+def admin():
+    return render_template('AdminInicio.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

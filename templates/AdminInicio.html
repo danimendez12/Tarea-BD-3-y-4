@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrador - Principal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+
+    <!-- Botón de Logout -->
+    <button class="logout-button" onclick="location.href='{{ url_for('login') }}'">Logout</button>
+
+    <!-- Contenedor principal del Administrador -->
+    <div class="dashboard-container">
+        <h2>Panel de Administrador</h2>
+
+        <!-- Botones de Navegación -->
+        <div class="admin-buttons">
+            <button onclick="location.href='{{ url_for('cuentas') }}'">Cuentas</button>
+            <button onclick="location.href='{{ url_for('estados_cuenta') }}'">Estados de Cuenta</button>
+            <button onclick="location.href='#'">Usuarios</button>
+            <button onclick="location.href='#'">Movimientos Sospechosos</button>
+        </div>
+    </div>
+</body>
+</html>
