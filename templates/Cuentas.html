@@ -8,30 +8,40 @@
 </head>
 <body>
 
-    <!-- Botón de Logout -->
+    <!-- LOGOUT -->
     <button class="logout-button" onclick="location.href='{{ url_for('login') }}'">Logout</button>
 
-    <!-- Contenedor principal de la pantalla de cuentas -->
     <div class="accounts-container">
-        <!-- Botón de Regresar -->
+
         <button class="back-button" onclick="location.href='{{ url_for('inicio') }}'">Regresar</button>
 
         <h2>Mis Cuentas</h2>
 
-        <!-- Lista de Cuentas (TCM) -->
-        <ul class="account-list">
-            <li>Cuenta TCM 1</li>
-            <li>Cuenta TCM 2</li>
-            <li>Cuenta TCM 3</li>
-        </ul>
-
-        <!-- Menú de acciones -->
-        <div class="action-buttons">
-            <button onclick="location.href='#'">Insertar</button>
-            <button onclick="location.href='#'">Consultar</button>
-            <button onclick="location.href='#'">Eliminar</button>
-            <button onclick="location.href='#'">Actualizar</button>
-        </div>
+        <!-- Tabla de Tarjetas -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Tipo de Tarjeta</th>
+                    <th>Código de Tarjeta</th>
+                    <th>Saldo</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cuenta in cuentas %}
+                <tr>
+                    <td>{{ cuenta.TipoTarjeta }}</td>
+                    <td>{{ cuenta.CodigoTarjeta }}</td>
+                    <td>{{ cuenta.Saldo }}</td>
+                    <td>
+                        <form>
+                            <button type="submit">Consultar</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </body>
 </html>
