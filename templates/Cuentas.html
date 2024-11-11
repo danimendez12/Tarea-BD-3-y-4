@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Cuentas</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+
+    <!-- Botón de Logout -->
+    <button class="logout-button" onclick="location.href='{{ url_for('login') }}'">Logout</button>
+
+    <!-- Contenedor principal de la pantalla de cuentas -->
+    <div class="accounts-container">
+        <!-- Botón de Regresar -->
+        <button class="back-button" onclick="location.href='{{ url_for('principal') }}'">Regresar</button>
+
+        <h2>Mis Cuentas</h2>
+
+        <!-- Lista de Cuentas (TCM) -->
+        <ul class="account-list">
+            <li>Cuenta TCM 1</li>
+            <li>Cuenta TCM 2</li>
+            <li>Cuenta TCM 3</li>
+        </ul>
+
+        <!-- Menú de acciones -->
+        <div class="action-buttons">
+            <button onclick="location.href='#'">Insertar</button>
+            <button onclick="location.href='#'">Consultar</button>
+            <button onclick="location.href='#'">Eliminar</button>
+            <button onclick="location.href='#'">Actualizar</button>
+        </div>
+    </div>
+</body>
+</html>
+

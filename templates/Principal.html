@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <button class="logout-button" onclick="location.href='{{ url_for('login') }}'">Logout</button>
+    <div class="dashboard-container">
+        <h2>Sistema de Tarjeta de Crédito</h2>
+        <div class="dashboard-buttons">
+            <button onclick="location.href='{{ url_for('cuentas') }}'">Ver Cuentas</button>
+            <button onclick="location.href='{{ url_for('estados_cuenta') }}'">Mis Movimientos</button>
+            <button onclick="location.href='{{ url_for('movimientos') }}'">Estados de Cuenta</button>
+        </div>
+    </div>
+</body>
+</html>

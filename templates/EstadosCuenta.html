@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estado de Cuenta Mensual</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <!-- LOGOUT -->
+    <button class="logout-button" onclick="location.href='{{ url_for('login') }}'">Logout</button>
+
+    <div class="statement-container">
+
+        <button class="back-button" onclick="location.href='{{ url_for('principal') }}'">Regresar</button>
+
+        <h2>Estado de Cuenta Mensual</h2>
+
+        <div class="statement-buttons">
+            <button onclick="location.href='#'">Estado de Cuenta</button>
+            <button onclick="location.href='#'">Sub Estados de Cuenta</button>
+        </div>
+    </div>
+</body>
+</html>
