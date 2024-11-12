@@ -1,0 +1,576 @@
+Script de Crear TTCM
+create table Tarea3.dbo.TTCM (
+  id int primary key not null,
+  Nombre varchar(64)
+);
+GO
+
+CREATE TABLE Tarea3.dbo.TRN
+        (
+            id PRIMARY KEY IDENTITY (1,1),
+            nombre varchar(64),
+            tipo   varchar(64)
+        )
+
+
+CREATE TABLE Tarea3.dbo.TRN
+        (
+            id INT PRIMARY KEY IDENTITY (1,1) not null
+            , nombre varchar(64) not null
+            , tipo   varchar(64) not null
+        )
+
+
+CREATE TABLE Tarea3.dbo.MIT
+        (
+            id INT PRIMARY KEY IDENTITY (1,1) not null
+            , nombre varchar(64) not null
+
+        )
+
+
+
+
+CREATE TABLE Tarea3.dbo.TMIC
+        (
+            id INT PRIMARY KEY IDENTITY (1,1) not null
+            , nombre varchar(64) not null
+
+        )
+
+
+
+
+
+CREATE TABLE Tarea3.dbo.TMIM
+        (
+            id INT PRIMARY KEY IDENTITY (1,1) not null
+            , nombre varchar(64) not null
+
+        )
+
+
+
+
+ CREATE TABLE Tarea3.dbo.RN
+        (
+            id INT PRIMARY KEY IDENTITY (1,1) not null
+            , nombre varchar(64) not null
+            , TTCM_ID INT
+            , TRN_ID INT
+
+
+            , CONSTRAINT FK_RN_TTCM FOREIGN KEY (TTCM_ID) REFERENCES Tarea3.dbo.TTCM(id)
+            , CONSTRAINT FK_RN_TRN FOREIGN KEY (TRN_ID) REFERENCES Tarea3.dbo.TRN(id)
+
+
+        )
+
+
+ CREATE TABLE Tarea3.dbo.TM
+(
+    id INT PRIMARY KEY IDENTITY (1,1) not null
+    , nombre varchar(64) not null
+    , accion varchar(64) not null
+    , acumulaATM binary not null
+    ,acumulaVEN binary not null
+
+
+
+
+)
+
+
+
+CREATE TABLE Tarea3.dbo.usuario
+(
+    id INT PRIMARY KEY IDENTITY (1,1) not null
+    , nombre varchar(64) not null
+    , password varchar(64) not null
+
+)
+
+
+CREATE TABLE Tarea3.dbo.TH
+(
+    id INT PRIMARY KEY IDENTITY (1,1) not null,
+    Nombre NVARCHAR(100) NOT NULL,
+    ValorDocIdentidad VARCHAR(20) NOT NULL ,
+    FechaNacimiento DATE NOT NULL,
+    NombreUsuario NVARCHAR(50) NOT NULL ,
+    Password NVARCHAR(50) NOT NULL
+
+)
+
+CREATE TABLE Tarea3.dbo.TCM
+        (
+            id INT PRIMARY KEY IDENTITY (1,1) not null,
+           Codigo INT NOT NULL,
+            TipoTCM INT NOT NULL ,
+            LimiteCredito INT NOT NULL,
+            Th INT NOT NULL,
+
+            CONSTRAINT FTipoTCM FOREIGN KEY (TipoTCM) REFERENCES Tarea3.dbo.TTCM(id)
+            , CONSTRAINT FTH FOREIGN KEY (Th) REFERENCES Tarea3.dbo.TH(id)
+
+        )
+
+CREATE TABLE Tarea3.dbo.TCA
+(   id INT PRIMARY KEY IDENTITY (1,1) not null
+    ,   CodigoTCM INT NOT NULL
+    ,   CodigoTCA INT NOT NULL
+    ,   Th INT NOT NULL,
+
+    CONSTRAINT FTCM FOREIGN KEY (CodigoTCM) REFERENCES Tarea3.dbo.TCM(id)
+    , CONSTRAINT FTCA_TH FOREIGN KEY (Th) REFERENCES Tarea3.dbo.TH(id)
+
+)
+
+CREATE TABLE Tarea3.dbo.TF (
+    id INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+    Codigo BIGINT NOT NULL,
+    CodigoAsociado INT NOT NULL,                          -- Relación con TCM o TCA
+    MesVencimiento INT NOT NULL,
+    AñoVencimiento INT NOT NULL,
+    CCV INT NOT NULL,                                     -- Código de seguridad de la tarjeta
+
+    CONSTRAINT FK_TF_TCM FOREIGN KEY (CodigoAsociado) REFERENCES Tarea3.dbo.TCM(id),
+    CONSTRAINT FK_TF_TCA FOREIGN KEY (CodigoAsociado) REFERENCES Tarea3.dbo.TCA(id)
+);
+
+CREATE TABLE Tarea3.dbo.InteresesTCM (
+    id INT PRIMARY KEY IDENTITY(1,1),  -- Identificador único
+    TCMId INT NOT NULL,                 -- Relacionado con la TCM
+    SaldoInteresesCorrientes DECIMAL(18,2) DEFAULT 0.00,  -- Saldo de intereses corrientes
+    SaldoInteresesMoratorios DECIMAL(18,2) DEFAULT 0.00,   -- Saldo de intereses moratorios
+    MontoDebitoInteresesCorrientes DECIMAL(18,2) DEFAULT 0.00,  -- Monto de débito por intereses corrientes
+    MontoDebitoInteresesMoratorios DECIMAL(18,2) DEFAULT 0.00,   -- Monto de débito por intereses moratorios
+    FechaCalculo DATE NOT NULL,        -- Fecha de cálculo de intereses
+    CONSTRAINT FK_InteresesTCM_TCM FOREIGN KEY (TCMId) REFERENCES Tarea3.dbo.TCM(id)  -- Relación con TCM
+);
+
+CREATE TABLE Tarea3.dbo.EstadoCuentaTCM (
+    id INT PRIMARY KEY IDENTITY(1,1),  -- Identificador único
+    TCMId INT NOT NULL,                 -- Relacionado con la TCM
+    FechaCorte DATE NOT NULL,           -- Fecha de corte del estado de cuenta
+    SaldoActual DECIMAL(18,2) DEFAULT 0.00,  -- Saldo actual
+    PagoContado DECIMAL(18,2) DEFAULT 0.00,  -- Pago de contado
+    PagoMinimo DECIMAL(18,2) DEFAULT 0.00,   -- Pago mínimo del mes anterior
+    InteresesCorrientes DECIMAL(18,2) DEFAULT 0.00,  -- Intereses corrientes acumulados
+    InteresesMoratorios DECIMAL(18,2) DEFAULT 0.00,   -- Intereses moratorios acumulados
+    CantidadOperacionesATM INT DEFAULT 0,            -- Cantidad de operaciones en ATM
+    CantidadOperacionesVentanilla INT DEFAULT 0,     -- Cantidad de operaciones en Ventanilla
+    SumaPagosAntesFechaMinimo DECIMAL(18,2) DEFAULT 0.00,  -- Suma de pagos antes de la fecha para pago mínimo
+    SumaPagosMes DECIMAL(18,2) DEFAULT 0.00,        -- Suma de pagos durante el mes
+    CantidadPagosMes INT DEFAULT 0,                  -- Cantidad de pagos durante el mes
+    SumaCompras DECIMAL(18,2) DEFAULT 0.00,          -- Suma de compras
+    CantidadCompras INT DEFAULT 0,                    -- Cantidad de compras
+    SumaRetiros DECIMAL(18,2) DEFAULT 0.00,          -- Suma de retiros
+    CantidadRetiros INT DEFAULT 0,                    -- Cantidad de retiros
+    SumaCreditos DECIMAL(18,2) DEFAULT 0.00,         -- Suma de todos los créditos
+    CantidadCreditos INT DEFAULT 0,                   -- Cantidad de todos los créditos
+    SumaDebitos DECIMAL(18,2) DEFAULT 0.00,          -- Suma de todos los débitos
+    CantidadDebitos INT DEFAULT 0,                    -- Cantidad de todos los débitos
+    CONSTRAINT FK_EstadoCuentaTCM_TCM FOREIGN KEY (TCMId) REFERENCES Tarea3.dbo.TCM(id)  -- Relación con TCM
+);
+
+
+CREATE TABLE Tarea3.dbo.SubEstadoCuentaTCA (
+    id INT PRIMARY KEY IDENTITY(1,1),          -- Identificador único
+    TCAId INT NOT NULL,                         -- Relacionado con la TCA
+    CantidadOperacionesATM INT DEFAULT 0,      -- Cantidad de operaciones en ATM
+    CantidadOperacionesVentanilla INT DEFAULT 0, -- Cantidad de operaciones en Ventanilla
+    SumaCompras DECIMAL(18,2) DEFAULT 0.00,    -- Suma de compras
+    CantidadCompras INT DEFAULT 0,              -- Cantidad de compras
+    SumaRetiros DECIMAL(18,2) DEFAULT 0.00,    -- Suma de retiros
+    CantidadRetiros INT DEFAULT 0,              -- Cantidad de retiros
+    SumaCreditos DECIMAL(18,2) DEFAULT 0.00,    -- Suma de todos los créditos
+    CantidadCreditos INT DEFAULT 0,             -- Cantidad de todos los créditos
+    SumaDebitos DECIMAL(18,2) DEFAULT 0.00,     -- Suma de todos los débitos
+    CantidadDebitos INT DEFAULT 0,              -- Cantidad de todos los débitos
+    CONSTRAINT FK_SubEstadoCuentaTCA_TCA FOREIGN KEY (TCAId) REFERENCES Tarea3.dbo.TCA(id) -- Relación con TCA
+);
+
+
+__DUDOSO__
+CREATE TRIGGER trg_ValidarCodigoAsociado
+ON Tarea3.dbo.TF
+INSTEAD OF INSERT, UPDATE
+AS
+BEGIN
+    BEGIN TRY
+        DECLARE @CodigoAsociado INT;
+
+        SELECT @CodigoAsociado = CodigoAsociado
+        FROM inserted;
+
+        -- Verificar si el CodigoAsociado existe en TCM o TCA
+        IF NOT EXISTS (SELECT 1 FROM Tarea3.dbo.TCM WHERE id = @CodigoAsociado)
+           AND NOT EXISTS (SELECT 1 FROM Tarea3.dbo.TCA WHERE id = @CodigoAsociado)
+        BEGIN
+            RAISERROR('El CodigoAsociado no existe en TCM ni en TCA', 16, 1);
+
+            INSERT INTO Tarea3.dbo.DBError (ErrorMessage)
+            VALUES ('El CodigoAsociado no existe en TCM ni en TCA. Codigo: ' + CAST(@CodigoAsociado AS NVARCHAR));
+            ROLLBACK TRANSACTION;
+            RETURN;
+        END
+
+        -- Si se pasa la validación, se permite la inserción o actualización
+        INSERT INTO Tarea3.dbo.TF (Codigo, CodigoAsociado, MesVencimiento, AñoVencimiento, CCV)
+        SELECT Codigo, CodigoAsociado, MesVencimiento, AñoVencimiento, CCV
+        FROM inserted;
+
+    END TRY
+    BEGIN CATCH
+        -- Si ocurre algún error, capturar el mensaje y registrar en DBError
+        INSERT INTO Tarea3.dbo.DBError (ErrorMessage)
+        VALUES ('Error en el trigger trg_ValidarCodigoAsociado: ' + ERROR_MESSAGE());
+
+        -- Rethrow the error to ensure proper error handling in the transaction
+        THROW;
+    END CATCH
+END;
+
+CREATE TRIGGER trg_InsertarEnMovimientosTCM
+ON MovimientosTF
+AFTER INSERT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+
+
+    -- Verificar el tipo de cuenta en la tabla TF según el IdTF insertado
+    INSERT INTO MovimientosTCM (idtcm, fechamovimiento, monto, descripcion, referencia, tipomovimiento)
+    SELECT
+        tf.CodigoAsociado,
+        i.fechaMovimiento,
+        i.Monto,
+        i.Descripcion,
+        i.Referencia,
+        i.TipoMovimiento
+    FROM Inserted i
+    INNER JOIN TF tf ON i.IdTF = tf.id
+    WHERE tf.TipoT = 1;
+
+    INSERT INTO MovimientosTCM (IdTCM, FechaMovimiento, Monto, Descripcion, Referencia, TipoMovimiento)
+    SELECT
+        tca.CodigoTCM,
+        i.FechaMovimiento,
+        i.Monto,
+        i.Descripcion,
+        i.Referencia,
+        i.TipoMovimiento
+    FROM Inserted i
+    INNER JOIN TF tf ON i.IdTF = tf.id
+    INNER JOIN TCA tca ON tf.CodigoAsociado = tca.CodigoTCA
+    WHERE tf.TipoT <> 1;
+
+END;
+GO
+
+
+
+DELETE FROM MovimientosTF;
+    DELETE FROM MovimientosTCM;
+    DELETE FROM DBError;
+    DELETE FROM EstadoCuentaTCM;
+    DELETE FROM InteresesTCM;
+    DELETE FROM SubEstadoCuentaTCA;
+    DELETE FROM TF;
+    DELETE FROM TH;
+    DELETE FROM TCM;
+    DELETE FROM TCA;
+
+    DELETE FROM TM;
+    DELETE FROM RN;
+    DELETE FROM TTCM;
+    DELETE FROM TRN;
+    DELETE FROM MIT;
+    DELETE FROM TMIC;
+    DELETE FROM TMIM;
+
+    -- Reiniciar contadores de identidad
+    DBCC CHECKIDENT ('MovimientosTF', RESEED, 0);
+    DBCC CHECKIDENT ('MovimientosTCM', RESEED, 0);
+    DBCC CHECKIDENT ('DBError', RESEED, 0);
+    DBCC CHECKIDENT ('EstadoCuentaTCM', RESEED, 0);
+    DBCC CHECKIDENT ('InteresesTCM', RESEED, 0);
+    DBCC CHECKIDENT ('SubEstadoCuentaTCA', RESEED, 0);
+    DBCC CHECKIDENT ('TF', RESEED, 0);
+    DBCC CHECKIDENT ('TH', RESEED, 0);
+    DBCC CHECKIDENT ('TCM', RESEED, 0);
+    DBCC CHECKIDENT ('TCA', RESEED, 0);
+
+    DBCC CHECKIDENT ('TM', RESEED, 0);
+    DBCC CHECKIDENT ('RN', RESEED, 0);
+    DBCC CHECKIDENT ('TTCM', RESEED, 0);
+    DBCC CHECKIDENT ('TRN', RESEED, 0);
+    DBCC CHECKIDENT ('MIT', RESEED, 0);
+    DBCC CHECKIDENT ('TMIC', RESEED, 0);
+    DBCC CHECKIDENT ('TMIM', RESEED, 0);
+
+
+    CREATE TRIGGER trg_AfterInsert_TCA
+ON TCA
+AFTER INSERT
+AS
+BEGIN
+    -- Declarar variables para almacenar los valores insertados
+    DECLARE @IdTCA INT;
+
+
+    -- Obtener los valores del registro insertado
+    SELECT @IdTCA = Id
+    FROM inserted;
+
+
+    INSERT INTO SubEstadoCuentaTCA (TCAId)
+    SELECT
+        @IdTCA
+
+
+END;
+GO
+
+
+
+CREATE TRIGGER trg_AfterInsert_TCM
+ON TCM
+AFTER INSERT
+AS
+BEGIN
+    -- Declarar variables para almacenar los valores insertados
+    DECLARE @IdTTCM INT;
+    DECLARE @FechaCorte DATE;
+    DECLARE @FechaCorteSiguiente DATE;
+
+    -- Obtener los valores del registro insertado
+    SELECT @IdTTCM = Id, @FechaCorte = FechaCorte
+    FROM inserted;
+
+    SET @FechaCorteSiguiente = DATEADD(MONTH, 1, @FechaCorte);
+    INSERT INTO EstadoCuentaTCM (TCMId, FechaCorte)
+    SELECT
+        @IdTTCM
+    ,   @FechaCorteSiguiente
+
+END;
+GO
+
+
+
+CREATE PROCEDURE ProcesarSegmentosXML
+    @XMLDoc XML
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Iniciar la transacción
+    BEGIN TRY
+        BEGIN TRANSACTION;
+            DECLARE @fechaOperacion DATE;
+
+            -- Variables de tabla para cada sección del XML
+            DECLARE @NTH TABLE (
+                Sec INT IDENTITY(1, 1),
+                Nombre NVARCHAR(64),
+                ValorDocIdentidad NVARCHAR(128),
+                FechaNacimiento DATE,
+                NombreUsuario NVARCHAR(64),
+                Password NVARCHAR(64)
+            );
+
+            DECLARE @NTCM TABLE (
+                Sec INT IDENTITY(1, 1),
+                Codigo  INT,
+                TipoTCM NVARCHAR(64),
+                LimiteCredito INT,
+                TH NVARCHAR(128)
+            );
+
+            DECLARE @NTCA TABLE (
+                Sec INT IDENTITY(1, 1),
+                CodigoTCM INT,
+                CodigoTCA INT,
+                TH NVARCHAR(128)
+            );
+
+            DECLARE @NTF TABLE (
+                Sec INT IDENTITY(1, 1),
+                Codigo bigint,
+                TCAsociada int,
+                FechaVencimiento DATE,
+                CCV int
+            );
+
+            DECLARE @Movimiento TABLE (
+                Sec INT IDENTITY(1, 1),
+                Nombre NVARCHAR(128),
+                TF bigint,
+                FechaMovimiento DATE,
+                Monto DECIMAL(18, 2),
+                Descripcion NVARCHAR(128),
+                Referencia NVARCHAR(128)
+            );
+
+            -- Obtener cada segmento de <fechaOperacion> como un nodo XML independiente
+            DECLARE @i INT = 1;
+            DECLARE @total INT = (SELECT @XMLDoc.value('count(/root/fechaOperacion)', 'INT'));
+
+            WHILE @i <= @total
+            BEGIN
+                -- Extraer el nodo de fechaOperacion para el segmento actual
+                DECLARE @segment XML;
+                SET @segment = (SELECT @XMLDoc.query('/root/fechaOperacion[position() = sql:variable("@i")]'));
+
+                -- Extraer la fecha de operación y almacenarla en la variable
+                SET @fechaOperacion = @segment.value('(/fechaOperacion/@Fecha)[1]', 'DATE');
+
+                -- Insertar en @NTH
+                INSERT INTO @NTH (Nombre, ValorDocIdentidad, FechaNacimiento, NombreUsuario, Password)
+                SELECT
+                    T.c.value('@Nombre', 'NVARCHAR(64)'),
+                    T.c.value('@ValorDocIdentidad', 'NVARCHAR(128)'),
+                    T.c.value('@FechaNacimiento', 'DATE'),
+                    T.c.value('@NombreUsuario', 'NVARCHAR(64)'),
+                    T.c.value('@Password', 'NVARCHAR(64)')
+                FROM @segment.nodes('/fechaOperacion/NTH/NTH') AS T(c);
+
+                INSERT INTO TH (Nombre, ValorDocIdentidad, FechaNacimiento, NombreUsuario, Password)
+                SELECT
+                    Nombre,
+                    ValorDocIdentidad,
+                    FechaNacimiento,
+                    NombreUsuario,
+                    Password
+                FROM @NTH
+
+
+                -- Insertar en @NTCM
+                INSERT INTO @NTCM (Codigo, TipoTCM, LimiteCredito, TH)
+                SELECT
+                    T.c.value('@Codigo', 'INT'),
+                    T.c.value('@TipoTCM', 'NVARCHAR(64)'),
+                    T.c.value('@LimiteCredito', 'INT'),
+                    T.c.value('@TH', 'NVARCHAR(128)')
+                FROM @segment.nodes('/fechaOperacion/NTCM/NTCM') AS T(c);
+
+                INSERT INTO TCM (Codigo, TipoTCM, LimiteCredito, Th, FechaCorte, TasaInteresCorriente, TasaInteresMoratorio)
+                SELECT
+                    nt.Codigo,
+                    tip.id,
+                    nt.LimiteCredito,
+                    th.id,
+                    @fechaOperacion,
+                    rn.Valor,
+                    rnM.Valor
+                FROM @NTCM AS nt
+                INNER JOIN TTCM AS tip ON nt.TipoTCM = tip.Nombre
+                INNER JOIN TH AS th ON nt.Th = th.ValorDocIdentidad
+                INNER JOIN RN AS rn ON rn.Nombre = 'Tasa de interes corriente' AND rn.TTCM_ID = tip.id
+                INNER JOIN RN AS rnM ON rnM.Nombre = 'intereses moratorios' AND rnM.TTCM_ID = tip.id;
+
+
+
+                -- Insertar en @NTCA
+                INSERT INTO @NTCA (CodigoTCM, CodigoTCA, TH)
+                SELECT
+                    T.c.value('@CodigoTCM', 'INT'),
+                    T.c.value('@CodigoTCA', 'INT'),
+                    T.c.value('@TH', 'NVARCHAR(128)')
+                FROM @segment.nodes('/fechaOperacion/NTCA/NTCA') AS T(c);
+
+                INSERT INTO TCA (CodigoTCM, CodigoTCA, Th)
+                SELECT
+                    tcm.id,
+                    tca.CodigoTCA,
+                    th.id
+                FROM @NTCA as tca
+                INNER JOIN TH as th ON th.ValorDocIdentidad = tca.TH
+                INNER JOIN TCM as tcm ON tcm.Codigo = tca.CodigoTCM
+
+                -- Cargar datos en la tabla temporal @NTF desde el XML
+                INSERT INTO @NTF (Codigo, TCAsociada, FechaVencimiento, CCV)
+                SELECT
+                    T.c.value('@Codigo', 'bigint'),
+                    T.c.value('@TCAsociada', 'INT'),
+                    -- Convierte "8/2026" a "2026-08-01"
+                    CONVERT(DATE,
+                        CASE
+                            -- Si FechaVencimiento es solo mes/año (como 8/2026), convierte a 2026-08-01
+                            WHEN CHARINDEX('/', T.c.value('@FechaVencimiento', 'VARCHAR(10)')) > 0
+                            THEN CONCAT('01/', T.c.value('@FechaVencimiento', 'VARCHAR(10)'))
+                            ELSE T.c.value('@FechaVencimiento', 'VARCHAR(10)')
+                        END, 103), -- 103 es el estilo de fecha 'DD/MM/YYYY'
+                    T.c.value('@CCV', 'INT')
+                FROM @segment.nodes('/fechaOperacion/NTF/NTF') AS T(c);
+                -- Insertar en TF con validación de si TCAsociada pertenece a TCM o TCA y obtener el ID correspondiente
+
+                INSERT INTO TF (Codigo, CodigoAsociado, MesVencimiento, AñoVencimiento, CCV, TipoT)
+                SELECT
+                    nt.Codigo,
+                    COALESCE(tcm.id, tca.id) AS CodigoAsociado,
+                    MONTH(nt.FechaVencimiento) AS MesVencimiento,
+                    YEAR(nt.FechaVencimiento) AS AñoVencimiento,
+                    nt.CCV,
+                    CASE
+                        WHEN tcm.id IS NOT NULL THEN 1
+                        WHEN tca.id IS NOT NULL THEN 2
+                        ELSE NULL
+                    END AS TipoT
+                FROM @NTF AS nt
+                LEFT JOIN TCM AS tcm ON nt.TCAsociada = tcm.Codigo
+                LEFT JOIN TCA AS tca ON nt.TCAsociada = tca.CodigoTCA
+                WHERE tca.id IS NOT NULL OR tcm.id IS NOT NULL;
+
+
+
+                -- Insertar en @Movimiento
+                INSERT INTO @Movimiento (Nombre, TF, FechaMovimiento, Monto, Descripcion, Referencia)
+                SELECT
+                    T.c.value('@Nombre', 'NVARCHAR(128)'),
+                    T.c.value('@TF', 'bigint'),
+                    T.c.value('@FechaMovimiento', 'DATE'),
+                    T.c.value('@Monto', 'DECIMAL(18,2)'),
+                    T.c.value('@Descripcion', 'NVARCHAR(128)'),
+                    T.c.value('@Referencia', 'NVARCHAR(128)')
+                FROM @segment.nodes('/fechaOperacion/Movimiento/Movimiento') AS T(c);
+
+                INSERT INTO MovimientosTF (IdTF, TipoMovimiento, fechaMovimiento, Monto, Descripcion, Referencia)
+                SELECT
+                    tf.id,
+                    tm.id,
+                    M.FechaMovimiento,
+                    M.Monto,
+                    M.Descripcion,
+                    M.Referencia
+
+                FROM @Movimiento as M
+                INNER JOIN TF as tf ON tf.Codigo = M.TF
+                INNER JOIN TM as tm on tm.nombre = M.Nombre
+
+                -- Incrementa el contador para el siguiente segmento
+                SET @i = @i + 1;
+            END;
+
+        COMMIT TRANSACTION;
+
+    END TRY
+    BEGIN CATCH
+        -- Revertir la transacción si ocurre un error
+        ROLLBACK TRANSACTION;
+
+        -- Captura de error y registro
+
+        INSERT INTO DBError(ErrorMessage, ErrorDate, LineaError)
+        SELECT
+            ERROR_MESSAGE()
+        ,   GETDATE()
+        ,   error_line()
+    END CATCH;
+
+END;
+go
+
