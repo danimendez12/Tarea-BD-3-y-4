@@ -7,31 +7,38 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
+    <!-- LOGOUT -->
+    <button class="logout-button" onclick="location.href='{{ url_for('login') }}'">Logout</button>
+
+    <!-- BACK BUTTON -->
     <button class="back-button" onclick="location.href='{{ url_for('inicio') }}'">Regresar</button>
-    <h2>Movimientos de la Tarjeta {{ codigo_tarjeta }}</h2>
-    <table class="movements-table">
-        <thead>
-            <tr>
-                <th>Fecha Operación</th>
-                <th>Tipo Movimiento</th>
-                <th>Descripción</th>
-                <th>Referencia</th>
-                <th>Monto</th>
-                <th>Nuevo Saldo</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for movimiento in movimientos %}
-            <tr>
-                <td>{{ mov.fecha_operacion }}</td>
-                <td>{{ mov.tipo_movimiento }}</td>
-                <td>{{ mov.descripcion }}</td>
-                <td>{{ mov.referencia }}</td>
-                <td>{{ mov.monto }}</td>
-                <td>{{ mov.nuevo_saldo }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+
+    <div class="movements-container">
+        <h2>Movimientos - {{ tipo_cuenta }}</h2>
+        <table class="movements-table">
+            <thead>
+                <tr>
+                    <th>Fecha de Operación</th>
+                    <th>Tipo de Movimiento</th>
+                    <th>Descripción</th>
+                    <th>Referencia</th>
+                    <th>Monto</th>
+                    <th>Nuevo Saldo</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for movimiento in movimientos %}
+                <tr>
+                    <td>{{ movimiento.FechaOperacion }}</td>
+                    <td>{{ movimiento.TipoMovimiento }}</td>
+                    <td>{{ movimiento.Descripcion }}</td>
+                    <td>{{ movimiento.Referencia }}</td>
+                    <td>{{ movimiento.Monto }}</td>
+                    <td>{{ movimiento.NuevoSaldo }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </body>
 </html>

@@ -134,7 +134,8 @@ def estados_cuenta(codigo_tarjeta, tipo_cuenta):
             print('cuenta adicional')
             cursor.execute("EXEC dbo.ListarSubEC @CodigoTarjeta=?", (int(codigo_tarjeta),))
             estados = cursor.fetchall()
-            print(  estados)
+            for estado in estados:
+                print(estado)
             cuenta_tipo = "Sub Estado de Cuenta"
 
         conn.commit()
@@ -149,124 +150,29 @@ def estados_cuenta(codigo_tarjeta, tipo_cuenta):
     return render_template('EstadosCuenta.html', estados=estados, cuenta_tipo=cuenta_tipo,codigo_tarjeta=codigo_tarjeta)
 
 
-@app.route('/movimientos/<int:codigo_tarjeta>/<fecha_corte>/<tipo_cuenta>', methods=['GET'])
-def movimientos(codigo_tarjeta, fecha_corte, tipo_cuenta):
-    if 'username' not in session:
-        print("Por favor, inicia sesión primero.")
-        return redirect(url_for('login'))
-
-    try:
-        conn = get_db_connection()
-        cursor = conn.cursor()
-
-        # Convertir fecha_corte de cadena a fecha
-        fecha_corte = datetime.strptime(fecha_corte, '%Y-%m-%d').date()
-
-        # Determinar la tabla y los campos según tipo_cuenta
-        if tipo_cuenta.lower() == 'maestra':
-            # Para TCM
-            # Obtener la FechaCorte anterior
-            cursor.execute("""
-                SELECT TOP 1 FechaCorte
-                FROM EstadoCuentaTCM ec
-                INNER JOIN TF tf ON ec.TCMId = tf.CodigoTCM
-                WHERE tf.Codigo = ? AND ec.FechaCorte < ?
-                ORDER BY ec.FechaCorte DESC
-                """, codigo_tarjeta, fecha_corte)
-        else:
-            # Para TCA
-            cursor.execute("""
-                SELECT TOP 1 FechaCorte
-                FROM SubEstadoCuentaTCA sec
-                INNER JOIN TF tf ON sec.TCAId = tf.CodigoTCA
-                WHERE tf.Codigo = ? AND sec.FechaCorte < ?
-                ORDER BY sec.FechaCorte DESC
-                """, codigo_tarjeta, fecha_corte)
-
-        prev_fecha_corte_row = cursor.fetchone()
-
-        if prev_fecha_corte_row:
-            fecha_inicio = prev_fecha_corte_row.FechaCorte
-        else:
-            # Si no hay FechaCorte anterior, obtener movimientos desde el inicio
-            fecha_inicio = None
-
-        # Llamar al procedimiento almacenado con el rango de fechas
-        # Necesitas modificar tu procedimiento almacenado para aceptar @FechaInicio y @FechaFin
-        if fecha_inicio:
-            cursor.execute("EXEC dbo.ListarMOV ?, ?, ?, ?", codigo_tarjeta, fecha_inicio, fecha_corte, tipo_cuenta)
-        else:
-            cursor.execute("EXEC dbo.ListarMOV ?, NULL, ?, ?", codigo_tarjeta, fecha_corte, tipo_cuenta)
-
-        rows = cursor.fetchall()
-
-        movimientos = [
-            {
-                'fecha_operacion': row.FechaOperacion.strftime('%Y-%m-%d'),
-                'tipo_movimiento': row.TipoMovimiento,
-                'descripcion': row.Descripcion,
-                'referencia': row.Referencia,
-                'monto': float(row.Monto),
-                'nuevo_saldo': float(row.NuevoSaldo)
-            }
-            for row in rows
-        ]
-
-        return render_template('Movimientos.html', movimientos=movimientos, codigo_tarjeta=codigo_tarjeta)
-
-    except Exception as e:
-        print(f"Error al obtener movimientos: {e}")
-        return jsonify({'error': str(e)}), 500
-
-    finally:
-        if 'conn' in locals():
-            conn.close()
-
-
-if __name__ == '__main__':
-    app.run(debug=True)
-
-
-@app.route('/cuentas')
-def cuentas():
-
-    if 'username' not in session:
-        print("Por favor, inicia sesión primero.", "error")
-        return redirect(url_for('login'))
-
-    username = session['username']
-
+@app.route('/movimientos/<int:codigo_tarjeta>/<string:tipo_cuenta>')
+def movimientos(codigo_tarjeta, tipo_cuenta):
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    cuentas_list = []
-    out_result = None
+    movimientos = []
 
     try:
-
-        # Ejecuta el procedimiento almacenado
-        cursor.execute("""
-            DECLARE @OutResult INT;
-            EXEC dbo.ListarCuentas @NombreUsuario = ?, @outResult = @OutResult OUTPUT;
-            SELECT @OutResult AS outResult;
-        """, (username,))
-
-        cuentas_list = cursor.fetchall()
-
-        cursor.nextset()
-        out_result = cursor.fetchone()[0]
-
-        print(f"Valor de out_result: {out_result}")
-        print("Cuentas obtenidas:", cuentas_list)
-
-        if out_result != 0:
-            print("No se pudieron obtener las cuentas del tarjetahabiente.")
+        cursor.execute("EXEC dbo.ListarMovimientos @CodigoTarjeta = ?, @TipoCuenta = ?",
+                       (codigo_tarjeta, tipo_cuenta))
+        movimientos = cursor.fetchall()
+        for movimiento in movimientos:
+            print(movimiento)
 
     except Exception as e:
-        print("Error al obtener cuentas:", {str(e)})
+        print("Error al obtener movimientos:", e)
 
     finally:
         cursor.close()
         conn.close()
 
-    return render_template('Cuentas.html', cuentas=cuentas_list)
+    return render_template('Movimientos.html', movimientos=movimientos, tipo_cuenta=tipo_cuenta)
+
+
+if __name__ == '__main__':
+    app.run(debug=True)

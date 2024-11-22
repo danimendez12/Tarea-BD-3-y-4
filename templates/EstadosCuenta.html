@@ -40,7 +40,10 @@
                         <td>{{ estado.cant_ops_atm }}</td>
                         <td>{{ estado.cant_ops_ventanilla }}</td>
                         <td>
-                <button class="view-movements-button" onclick="location.href='#'">Ver Movimientos</button>
+                        <button class="view-movements-button"
+                            onclick="location.href='{{ url_for('movimientos', codigo_tarjeta=estado.codigo_tarjeta, tipo_cuenta=cuenta_tipo) }}'">
+                            Ver Movimientos
+                        </button>
                         </td>
                     </tr>
                     {% endfor %}
@@ -71,7 +74,10 @@
                         <td>{{ estado.suma_creditos }}</td>
                         <td>{{ estado.suma_debitos }}</td>
                         <td>
-                <button class="view-movements-button" onclick="location.href='#'">Ver Movimientos</button>
+                        <button class="view-movements-button"
+                            onclick="location.href='{{ url_for('movimientos', codigo_tarjeta=estado.codigo_tarjeta, tipo_cuenta=cuenta_tipo) }}'">
+                            Ver Movimientos
+                        </button>
                         </td>
                     </tr>
                     {% endfor %}
