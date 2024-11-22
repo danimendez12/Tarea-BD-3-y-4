@@ -13,13 +13,71 @@
     <div class="statement-container">
 
         <button class="back-button" onclick="location.href='{{ url_for('inicio') }}'">Regresar</button>
+        <h2>{{ cuenta_tipo }}</h2>
 
-        <h2>Estado de Cuenta Mensual</h2>
-
-        <div class="statement-buttons">
-            <button onclick="location.href='#'">Estado de Cuenta</button>
-            <button onclick="location.href='#'">Sub Estados de Cuenta</button>
-        </div>
+        {% if cuenta_tipo == "Estado de Cuenta" %}
+            <table class="statement-table">
+                <thead>
+                    <tr>
+                        <th>Fecha EC.</th>
+                        <th>Pago Mínimo</th>
+                        <th>Pago de Contado</th>
+                        <th>Int. Corrientes</th>
+                        <th>Int. Moratorios</th>
+                        <th>Cant. Ops ATM</th>
+                        <th>Cant. Ops Ventanilla</th>
+                        <th>Movimientos</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for estado in estados %}
+                    <tr>
+                        <td>{{ estado.fecha_corte }}</td>
+                        <td>{{ estado.pago_minimo }}</td>
+                        <td>{{ estado.pago_contado }}</td>
+                        <td>{{ estado.int_corrientes }}</td>
+                        <td>{{ estado.int_moratorios }}</td>
+                        <td>{{ estado.cant_ops_atm }}</td>
+                        <td>{{ estado.cant_ops_ventanilla }}</td>
+                        <td>
+                <button class="view-movements-button" onclick="location.href='#'">Ver Movimientos</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <table class="statement-table">
+                <thead>
+                    <tr>
+                        <th>Fecha EC.</th>
+                        <th>Cant. Ops ATM</th>
+                        <th>Cant. Ops Ventanilla</th>
+                        <th>Suma Compras</th>
+                        <th>Suma Retiros</th>
+                        <th>Suma Créditos</th>
+                        <th>Suma Débitos</th>
+                        <th>Movimientos</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for estado in estados %}
+                    <tr>
+                        <td>{{ estado.fecha_corte }}</td>
+                        <td>{{ estado.cant_ops_atm }}</td>
+                        <td>{{ estado.cant_ops_ventanilla }}</td>
+                        <td>{{ estado.suma_compras }}</td>
+                        <td>{{ estado.suma_retiros }}</td>
+                        <td>{{ estado.suma_creditos }}</td>
+                        <td>{{ estado.suma_debitos }}</td>
+                        <td>
+                <button class="view-movements-button" onclick="location.href='#'">Ver Movimientos</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
     </div>
 </body>
 </html>

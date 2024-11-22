@@ -20,7 +20,6 @@ h2 {
     font-weight: bold;
     color: #333333;
     margin-bottom: 20px;
-    text-align: center;
 }
 
 /* LOGIN */
@@ -91,12 +90,11 @@ button:hover {
 
 /* PANTALLA PRINCIPAL */
 .dashboard-container {
-    width: 600px;
-    padding: 40px;
-    background-color: #ffffff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    margin: 20px;
+    padding: 20px;
+    background-color: #f5f5f5;
     border-radius: 8px;
-    text-align: center;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .dashboard-buttons {
@@ -120,6 +118,40 @@ button:hover {
 
 .dashboard-buttons button:hover {
     background-color: #333333;
+}
+
+/* GRID DE INICIO */
+.tf-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr); /* Cambia según el número de columnas necesarias */
+    gap: 10px;
+    margin-top: 20px;
+}
+
+/* Encabezados de columna */
+.grid-header {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+/* Fila de la tarjeta */
+.tf-row {
+    display: contents; /* Permite que cada tarjeta esté en una sola fila de la cuadrícula */
+}
+
+/* Elementos de cada tarjeta */
+.grid-item {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+/* Efecto hover para items del grid */
+.grid-item:hover {
+    background-color: #f9f9f9;
 }
 
 /* ADMIN */
@@ -245,6 +277,23 @@ button[type="submit"]:hover {
     background-color: #333333;
 }
 
+.action-button {
+    padding: 8px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.action-button:hover {
+    background-color: #0056b3;
+}
+
+
 /* Contenedor principal de movimientos */
 .movements-container {
     width: 1000px; /* Tamaño más amplio para la tabla */
@@ -318,14 +367,14 @@ button[type="submit"]:hover {
 
 /* ESTADOS DE CUENTA */
 .statement-container {
-    width: 700px;
-    min-height: 150px;
-    padding: 40px;
-    padding-top: 60px; /* Espacio para el botón de Regresar */
+    width: 90%;
+    max-width: 800px;
+    margin: 20px auto; /* Centra el contenedor horizontalmente */
+    padding: 20px;
+    grid-template-columns: repeat(7, 1fr); /* Cambia según el número de columnas necesarias */
     background-color: #ffffff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     border-radius: 8px;
-    position: relative;
     text-align: center;
 }
 
@@ -351,6 +400,14 @@ button[type="submit"]:hover {
 
 .statement-buttons button:hover {
     background-color: #333333;
+}
+
+/* GRID ESTADOS DE CUENTA */
+.ec-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+    margin-top: 20px;
 }
 
 /* BOTON LOGOUT */
@@ -392,4 +449,80 @@ button[type="submit"]:hover {
 
 .back-button:hover {
     background-color: #aaaaaa;
+}
+
+/***************************************************************** INICIO ************************************************************************/
+
+.credit-card-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: white;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.credit-card-table thead {
+    background-color: #4CAF50;
+    color: white;
+    text-align: left;
+    font-weight: bold;
+}
+
+.credit-card-table th,
+.credit-card-table td {
+    color: black;
+    padding: 10px 15px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+.credit-card-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Action button styles */
+.view-button {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+.view-button:hover {
+    background-color: #0056b3;
+}
+
+/***************************************************************** ESTADOS DE CUENTA ************************************************************************/
+
+.statement-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+.statement-table th, .statement-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+.statement-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.view-movements-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.view-movements-button:hover {
+    background-color: #45a049;
 }

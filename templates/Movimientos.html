@@ -3,60 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mis Movimientos</title>
+    <title>Movimientos</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <!-- LOGOUT -->
-    <button class="logout-button" onclick="location.href='{{ url_for('login') }}'">Logout</button>
-
-    <div class="movements-container">
-
-        <button class="back-button" onclick="location.href='{{ url_for('inicio') }}'">Regresar</button>
-
-        <h2>Mis Movimientos</h2>
-
-        <!-- DROPDOWN DE CUENTAS -->
-        <div class="account-selection">
-            <label for="account-dropdown">Selecciona una cuenta:</label>
-            <select id="account-dropdown">
-                <option value="cuenta1">Cuenta TCM 1</option>
-                <option value="cuenta2">Cuenta TCM 2</option>
-                <option value="cuenta3">Cuenta TCM 3</option>
-            </select>
-        </div>
-
-        <!-- TABLA -->
-        <table class="movements-table">
-            <thead>
-                <tr>
-                    <th>Fecha</th>
-                    <th>Referencia</th>
-                    <th>Descripción</th>
-                    <th>Monto</th>
-                    <th>Tipo</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- AGREGAR MOVIMIENTOS DINAMICAMENTE***** -->
-                <tr>
-                    <td>2023-11-10</td>
-                    <td>123456</td>
-                    <td>Compra en tienda</td>
-                    <td>$100.00</td>
-                    <td>Débito</td>
-                </tr>
-                <tr>
-                    <td>2023-11-11</td>
-                    <td>123457</td>
-                    <td>Depósito</td>
-                    <td>$200.00</td>
-                    <td>Crédito</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <button class="consult-button" onclick="location.href='#'">Consultar Movimiento</button>
-    </div>
+    <button class="back-button" onclick="location.href='{{ url_for('inicio') }}'">Regresar</button>
+    <h2>Movimientos de la Tarjeta {{ codigo_tarjeta }}</h2>
+    <table class="movements-table">
+        <thead>
+            <tr>
+                <th>Fecha Operación</th>
+                <th>Tipo Movimiento</th>
+                <th>Descripción</th>
+                <th>Referencia</th>
+                <th>Monto</th>
+                <th>Nuevo Saldo</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for movimiento in movimientos %}
+            <tr>
+                <td>{{ mov.fecha_operacion }}</td>
+                <td>{{ mov.tipo_movimiento }}</td>
+                <td>{{ mov.descripcion }}</td>
+                <td>{{ mov.referencia }}</td>
+                <td>{{ mov.monto }}</td>
+                <td>{{ mov.nuevo_saldo }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </body>
 </html>

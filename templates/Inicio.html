@@ -10,11 +10,30 @@
     <button class="logout-button" onclick="location.href='{{ url_for('login') }}'">Logout</button>
     <div class="dashboard-container">
         <h2>Sistema de Tarjeta de Crédito</h2>
-        <div class="dashboard-buttons">
-            <button onclick="location.href='{{ url_for('cuentas') }}'">Ver Cuentas</button>
-            <button onclick="location.href='{{ url_for('movimientos') }}'">Mis Movimientos</button>
-            <button onclick="location.href='{{ url_for('estados_cuenta') }}'">Estados de Cuenta</button>
-        </div>
+        <table class="credit-card-table">
+            <thead>
+                <tr>
+                    <th>Número TF</th>
+                    <th>Estado TF</th>
+                    <th>Tipo de Cuenta</th>
+                    <th>Fecha Venc.</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tarjeta in tarjetas %}
+                <tr class="card-row">
+                    <td>{{ tarjeta.numero }}</td>
+                    <td>{{ tarjeta.estado }}</td>
+                    <td>{{ tarjeta.tipo_cuenta }}</td>
+                    <td>{{ tarjeta.fecha_venc }}</td>
+                    <td>
+                        <button class="view-button" onclick="location.href='{{ url_for('estados_cuenta', codigo_tarjeta=tarjeta.numero, tipo_cuenta=tarjeta.tipo_cuenta) }}'">Ver</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </body>
 </html>
