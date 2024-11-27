@@ -9,7 +9,7 @@ app.secret_key = 'your_secret_key'
 # Connection to SQL Server
 def get_db_connection():
     conn = pyodbc.connect(
-        'DRIVER={ODBC Driver 18 for SQL Server};'
+        'DRIVER={ODBC Driver 17 for SQL Server};'
         'SERVER=mssql-180519-0.cloudclusters.net,10034;'
         'DATABASE=Tarea3;'
         'UID=Admin;'
@@ -150,17 +150,22 @@ def estados_cuenta(codigo_tarjeta, tipo_cuenta):
     return render_template('EstadosCuenta.html', estados=estados, cuenta_tipo=cuenta_tipo,codigo_tarjeta=codigo_tarjeta)
 
 
-@app.route('/movimientos/<int:codigo_tarjeta>/<string:tipo_cuenta>')
-def movimientos(codigo_tarjeta, tipo_cuenta):
+@app.route('/movimientos/<int:codigo_tarjeta>/<string:tipo_cuenta>/<int:id_estado>')
+def movimientos(codigo_tarjeta, tipo_cuenta, id_estado):
     conn = get_db_connection()
     cursor = conn.cursor()
+
+    print(id_estado)
 
     movimientos = []
 
     try:
-        cursor.execute("EXEC dbo.ListarMovimientos @CodigoTarjeta = ?, @TipoCuenta = ?",
-                       (codigo_tarjeta, tipo_cuenta))
+        print(codigo_tarjeta)
+        print(tipo_cuenta)
+        cursor.execute("EXEC dbo.ListarMovimientos @CodigoTarjeta = ?, @Ec = ?",
+                       (codigo_tarjeta,int(id_estado)))
         movimientos = cursor.fetchall()
+        print(movimientos)
         for movimiento in movimientos:
             print(movimiento)
 

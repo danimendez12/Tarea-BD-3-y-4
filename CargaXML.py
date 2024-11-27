@@ -20,23 +20,23 @@ cursor = conn.cursor()
 
 # Leer el archivo XML
 try:
-    n =1
-    if (n==0):
-        with open('/Users/danielmendez/Desktop/Tarea-BD-3-y-4/CatalogosFinal.xml', 'r', encoding='utf-8') as file:
-            xml_data = file.read()
 
-        # Ejecutar el procedimiento almacenado pasando el XML como parámetro
-        cursor.execute("EXEC dbo.ProcesarXML @XMLDoc=?", (xml_data,))
-    else:
 
-        with open('/Users/danielmendez/Desktop/Tarea-BD-3-y-4/OperacionesFinal.xml', 'r', encoding='utf-8') as file:
-            xml_data = file.read()
+    with open('/Users/danielmendez/Desktop/Tarea-BD-3-y-4/CatalogosFinal.xml', 'r', encoding='utf-8') as file:
+        xml_data = file.read()
 
-        # Ejecutar el procedimiento almacenado pasando el XML como parámetro
-        cursor.execute("EXEC dbo.ProcesarSegmentosXML @XMLDoc=?", (xml_data,))
+    # Ejecutar el procedimiento almacenado pasando el XML como parámetro
+    cursor.execute("EXEC dbo.ProcesarXML @XMLDoc=?", (xml_data,))
 
-        # Si el procedimiento no maneja la transacción, puedes descomentar esto:
-        # conn.commit()
+
+    with open('/Users/danielmendez/Desktop/Tarea-BD-3-y-4/OperacionesFinal.xml', 'r', encoding='utf-8') as file:
+        xml_data = file.read()
+
+    # Ejecutar el procedimiento almacenado pasando el XML como parámetro
+    cursor.execute("EXEC dbo.ProcesarSegmentosXML @XMLDoc=?", (xml_data,))
+
+    # Si el procedimiento no maneja la transacción, puedes descomentar esto:
+    # conn.commit()
 
     print("Procedimiento ejecutado correctamente.")
     cursor.commit()

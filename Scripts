@@ -273,15 +273,20 @@ GO
 
 
 DELETE FROM MovimientosTF;
+    DELETE FROM MovimientosSospechosos
+    DELETE FROM MovimientosTCA
     DELETE FROM MovimientosTCM;
     DELETE FROM DBError;
     DELETE FROM EstadoCuentaTCM;
     DELETE FROM InteresesTCM;
     DELETE FROM SubEstadoCuentaTCA;
-    DELETE FROM TF;
-    DELETE FROM TH;
+
+        DELETE FROM TCA;
     DELETE FROM TCM;
-    DELETE FROM TCA;
+
+    DELETE FROM TH;
+DELETE FROM TF;
+
 
     DELETE FROM TM;
     DELETE FROM RN;
@@ -293,6 +298,8 @@ DELETE FROM MovimientosTF;
 
     -- Reiniciar contadores de identidad
     DBCC CHECKIDENT ('MovimientosTF', RESEED, 0);
+DBCC CHECKIDENT ('MovimientosTCA', RESEED, 0);
+    DBCC CHECKIDENT ('MovimientosSospechosos', RESEED, 0);
     DBCC CHECKIDENT ('MovimientosTCM', RESEED, 0);
     DBCC CHECKIDENT ('DBError', RESEED, 0);
     DBCC CHECKIDENT ('EstadoCuentaTCM', RESEED, 0);
@@ -573,4 +580,72 @@ BEGIN
 
 END;
 go
+
+
+CREATE TRIGGER trg_InsertarEnMovimientosTCM
+ON MovimientosTF
+AFTER INSERT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+
+    INSERT INTO MovimientosTCM (IdTCM, FechaMovimiento, Monto, Descripcion, Referencia, TipoMovimiento)
+    SELECT
+        tf.CodigoTCM,
+        i.FechaMovimiento,
+        i.Monto,
+        i.Descripcion,
+        i.Referencia,
+        i.TipoMovimiento
+    FROM Inserted i
+    INNER JOIN TF tf ON i.IdTF = tf.Id
+    WHERE tf.TipoT = 0;
+
+
+    INSERT INTO MovimientosTCA (IdTCA, FechaMovimiento, Monto, Descripcion, Referencia, TipoMovimiento)
+    SELECT
+        tf.CodigoTCA,
+        i.FechaMovimiento,
+        i.Monto,
+        i.Descripcion,
+        i.Referencia,
+        i.TipoMovimiento
+    FROM Inserted i
+    INNER JOIN TF tf ON i.IdTF = tf.Id
+    WHERE tf.TipoT = 1;
+
+
+    INSERT INTO MovimientosTCM (IdTCM, FechaMovimiento, Monto, Descripcion, Referencia, TipoMovimiento)
+    SELECT
+        tca.CodigoTCM,
+        i.FechaMovimiento,
+        i.Monto,
+        i.Descripcion,
+        i.Referencia,
+        i.TipoMovimiento
+    FROM Inserted i
+    INNER JOIN TF tf ON i.IdTF = tf.Id
+    INNER JOIN TCA tca ON tf.CodigoTCA = tca.id
+    WHERE tf.TipoT = 1;
+
+END;
+go
+
+
+VIEW
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+CREATE VIEW VistaEstadoCuentaTCMActual
+AS
+SELECT *
+FROM EstadoCuentaTCM
+WHERE MONTH(FechaCorte) = MONTH(GETDATE())
+  AND YEAR(FechaCorte) = YEAR(GETDATE());
+GO
 
