@@ -162,8 +162,8 @@ def movimientos(codigo_tarjeta, tipo_cuenta, id_estado):
     try:
         print(codigo_tarjeta)
         print(tipo_cuenta)
-        cursor.execute("EXEC dbo.ListarMovimientos @CodigoTarjeta = ?, @Ec = ?",
-                       (codigo_tarjeta,int(id_estado)))
+        cursor.execute("EXEC dbo.ListarMovimientos @CodigoTarjeta = ?, @TipoCuenta = ?,@Ec = ?",
+                       (codigo_tarjeta,tipo_cuenta,int(id_estado)))
         movimientos = cursor.fetchall()
         print(movimientos)
         for movimiento in movimientos:
